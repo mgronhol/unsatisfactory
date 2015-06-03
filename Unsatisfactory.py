@@ -46,6 +46,9 @@ class Expression( object ):
 		elif self.op == XOR:
 			return self.lhs.eval() ^ self.rhs.eval()
 	
+	def __nonzero__( self ):
+		return self.eval()
+	
 	def depends(self):
 		out = []
 		if self.lhs:
@@ -89,6 +92,10 @@ class Expression( object ):
 					self.op = AND
 					self.lhs.demorgan()
 					self.rhs.demorgan()
+				
+				elif self.lhs.op == NOT:
+					if isinstance( self.lhs.lhs, Term ):
+						pass
 				
 		else:
 			self.lhs.demorgan()
@@ -191,6 +198,9 @@ class Term( object ):
 	
 	def __repr__(self):
 		return "Term('%s')" % self.name
+	
+	def __nonzero__( self ):
+		return self.eval()
 		
 
 def analyze( relations ):
