@@ -51,13 +51,15 @@ class Expression( object ):
 	
 	def depends(self):
 		out = []
-		if self.lhs:
+		
+		if self.lhs is not None:
 			out.extend( self.lhs.depends() )
-		if self.rhs:
+		if self.rhs is not None:
 			out.extend( self.rhs.depends() )
 		
 		# remove duplicates
 		return list(set(tuple(out)))
+		
 	
 	def __str__( self ):
 		if self.op == AND:
@@ -95,8 +97,21 @@ class Expression( object ):
 				
 				elif self.lhs.op == NOT:
 					if isinstance( self.lhs.lhs, Term ):
-						pass
-				
+						# mathematically unaesthetic
+						self.op = AND
+						self.rhs = self.lhs.lhs
+						self.lhs = self.lhs.lhs
+						# no need to continue
+						return
+						
+					else:
+						self.op = self.lhs.lhs.op
+						self.rhs = self.lhs.lhs.rhs
+						self.lhs = self.lhs.lhs.lhs
+						self.lhs.demorgan()
+						if self.rhs:
+							self.rhs.demorgan()
+						self.demorgan()
 		else:
 			self.lhs.demorgan()
 			self.rhs.demorgan()
@@ -108,6 +123,11 @@ class Expression( object ):
 		elif self.op == OR:
 			left = self.lhs.satisfy()
 			right = self.rhs.satisfy()
+			
+			# test if we did actually generate duplicates
+			if tuple(left) == tuple(right):
+				return [left]
+				
 			return [left, right]
 		
 		elif self.op == AND:
@@ -124,7 +144,7 @@ class Expression( object ):
 					if isinstance( l, tuple ):
 						raw_result = [l]
 					else:
-						result = l
+						raw_result = l
 						
 					if isinstance( r, tuple ):
 						raw_result.append( r )
@@ -249,12 +269,19 @@ Z = Term("Z")
 Q = X + Y
 P = X + (Y * Z)
 R = Z * (-Q )
-S = X * ((-X) * X)
+S = X * ((-(-(X+X))) * X)
+T = X * (-(-(-( -(-Z)))))
+
+print "T", T.depends()
+
+import sys
+sys.exit(0)
 
 print "Q :=", Q 
 print "P :=", P
 print "R :=", R
 print "S :=", S
+print "T :=", T
 print ""
 print "after De Morgan rewrite:"
 print ""
@@ -263,11 +290,13 @@ Q.demorgan()
 P.demorgan()
 R.demorgan()
 S.demorgan()
+T.demorgan()
 
 print "Q :=", Q 
 print "P :=", P
 print "R :=", R
 print "S :=", S
+print "T :=", T
 print ""
 
 print ""
@@ -276,6 +305,7 @@ print "Q:", Q.satisfy()
 print "P:", P.satisfy()
 print "R:", R.satisfy()
 print "S:", S.satisfy()
+print "T:", T.satisfy()
 
 print ""
 print ""
@@ -284,17 +314,20 @@ print "Q :=", Q, "->", Q.eval()
 print "P :=", P, "->", P.eval()
 print "R :=", R, "->", R.eval()
 print "S :=", S, "->", S.eval()
+print "T :=", T, "->", T.eval()
 
 print ""
 print "Q depends on", Q.depends()
 print "P depends on", P.depends()
 print "R depends on", R.depends()
 print "S depends on", S.depends()
+print "T depends on", T.depends()
 print ""
 analyze({
 	'Q': Q,
 	'R': R,
 	'P': P,
-	'S': S
+	'S': S,
+	'T': T,
 	})
 
