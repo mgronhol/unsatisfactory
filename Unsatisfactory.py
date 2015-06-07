@@ -306,6 +306,35 @@ class State( Term ):
 	
 	def __repr__(self):
 		return "State('%s')" % self.name
+
+class TransientEvent( Term ):
+	def __init__( self, name ):
+		self.name = name
+		self.turn_on = None
+		self.value = False
+
+	def __ilshift__( self, rhs ):
+		self.turn_on = rhs
+		return self
+	
+	def eval( self ):
+		left = self.turn_on.eval()
+		if not self.value and left:
+			return True
+			
+		self.value = left
+		return False
+	
+	def consistent( self ):
+		sat = self.turn_on.satisfy()
+		if len(sat) < 1:
+			return False
+		
+		return True
+	
+	def __repr__(self):
+		return "TransientEvent('%s')" % self.name
+	
 		
 
 def analyze( relations ):
