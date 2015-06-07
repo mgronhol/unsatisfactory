@@ -221,6 +221,91 @@ class Term( object ):
 	
 	def __nonzero__( self ):
 		return self.eval()
+
+
+class State( Term ):
+	def __init__( self, name ):
+		self.name = name
+		self.turn_on = None
+		self.turn_off = None
+		self.value = False
+	
+	def consistent( self ):
+		left = set(self.turn_on.depends())
+		right = set(self.turn_off.depends())
+		
+		#print ""
+		#print "consistency:"
+		#print "\tl:", left
+		#print "\tr:", right
+		
+		common = left.intersection( right )
+		# state turning on and off are fully independent
+		# -> not guaranteed that both wouldn't be true at the same time
+		
+		if len(common) < 1:
+			return False
+		
+		left = self.turn_on.satisfy()
+		right = self.turn_off.satisfy()
+		
+		#print ""
+		#print "satisfy:"
+		#print "\tl:", left
+		#print "\tr:", right
+		
+		# make sure that both on- and off-states are possible
+		if len( left ) < 1:
+			return False
+		
+		if len( right ) < 1:
+			return False
+		
+		# be sure that on- and off-states cannot be true at the same time
+		
+		for lhs in left:
+			for rhs in right:
+				found = False
+				for q in lhs:
+					if q in rhs:
+						found = True
+					else:
+						found = False
+				if found:
+					return False
+				
+				found = False
+				for q in rhs:
+					if q in lhs:
+						found = True
+					else:
+						found = False
+				if found:
+					return False
+						
+		return True
+	
+	def eval( self ):
+		left = self.turn_on.eval()
+		right = self.turn_off.eval()
+		if left:
+			self.value = True
+		
+		if right:
+			self.value = False
+		
+		return self.value
+	
+	def __irshift__( self, rhs ):
+		self.turn_off = rhs
+		return self
+	
+	def __ilshift__( self, rhs ):
+		self.turn_on = rhs
+		return self
+	
+	def __repr__(self):
+		return "State('%s')" % self.name
 		
 
 def analyze( relations ):
@@ -271,11 +356,6 @@ P = X + (Y * Z)
 R = Z * (-Q )
 S = X * ((-(-(X+X))) * X)
 T = X * (-(-(-( -(-Z)))))
-
-print "T", T.depends()
-
-import sys
-sys.exit(0)
 
 print "Q :=", Q 
 print "P :=", P
@@ -330,4 +410,26 @@ analyze({
 	'S': S,
 	'T': T,
 	})
+
+print ""
+print ""
+
+A = State("A")
+B = State("B")
+
+A <<= -Q
+A >>= R
+
+B <<= Q * (-A)
+B >>= R
+
+print "Is A consistent?", A.consistent()
+print ""
+print "A :=", A.eval()
+print ""
+print "Is B consistent?", B.consistent()
+print ""
+print "B :=", B.eval()
+
+
 
