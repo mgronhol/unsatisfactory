@@ -375,90 +375,92 @@ def analyze( relations ):
 
 
 ### example
-				
-X = Term("X")
-Y = Term("Y")
-Z = Term("Z")
 
-Q = X + Y
-P = X + (Y * Z)
-R = Z * (-Q )
-S = X * ((-(-(X+X))) * X)
-T = X * (-(-(-( -(-Z)))))
+if __name__ == "__main__":
+					
+	X = Term("X")
+	Y = Term("Y")
+	Z = Term("Z")
 
-print "Q :=", Q 
-print "P :=", P
-print "R :=", R
-print "S :=", S
-print "T :=", T
-print ""
-print "after De Morgan rewrite:"
-print ""
+	Q = X + Y
+	P = X + (Y * Z)
+	R = Z * (-Q )
+	S = X * ((-(-(X+X))) * X)
+	T = X * (-(-(-( -(-Z)))))
 
-Q.demorgan()
-P.demorgan()
-R.demorgan()
-S.demorgan()
-T.demorgan()
+	print "Q :=", Q 
+	print "P :=", P
+	print "R :=", R
+	print "S :=", S
+	print "T :=", T
+	print ""
+	print "after De Morgan rewrite:"
+	print ""
 
-print "Q :=", Q 
-print "P :=", P
-print "R :=", R
-print "S :=", S
-print "T :=", T
-print ""
+	Q.demorgan()
+	P.demorgan()
+	R.demorgan()
+	S.demorgan()
+	T.demorgan()
 
-print ""
-print "Satify test"
-print "Q:", Q.satisfy()
-print "P:", P.satisfy()
-print "R:", R.satisfy()
-print "S:", S.satisfy()
-print "T:", T.satisfy()
+	print "Q :=", Q 
+	print "P :=", P
+	print "R :=", R
+	print "S :=", S
+	print "T :=", T
+	print ""
 
-print ""
-print ""
+	print ""
+	print "Satify test"
+	print "Q:", Q.satisfy()
+	print "P:", P.satisfy()
+	print "R:", R.satisfy()
+	print "S:", S.satisfy()
+	print "T:", T.satisfy()
 
-print "Q :=", Q, "->", Q.eval()
-print "P :=", P, "->", P.eval()
-print "R :=", R, "->", R.eval()
-print "S :=", S, "->", S.eval()
-print "T :=", T, "->", T.eval()
+	print ""
+	print ""
 
-print ""
-print "Q depends on", Q.depends()
-print "P depends on", P.depends()
-print "R depends on", R.depends()
-print "S depends on", S.depends()
-print "T depends on", T.depends()
-print ""
-analyze({
-	'Q': Q,
-	'R': R,
-	'P': P,
-	'S': S,
-	'T': T,
-	})
+	print "Q :=", Q, "->", Q.eval()
+	print "P :=", P, "->", P.eval()
+	print "R :=", R, "->", R.eval()
+	print "S :=", S, "->", S.eval()
+	print "T :=", T, "->", T.eval()
 
-print ""
-print ""
+	print ""
+	print "Q depends on", Q.depends()
+	print "P depends on", P.depends()
+	print "R depends on", R.depends()
+	print "S depends on", S.depends()
+	print "T depends on", T.depends()
+	print ""
+	analyze({
+		'Q': Q,
+		'R': R,
+		'P': P,
+		'S': S,
+		'T': T,
+		})
 
-A = State("A")
-B = State("B")
+	print ""
+	print ""
 
-A <<= -Q
-A >>= R
+	A = State("A")
+	B = State("B")
 
-B <<= Q * (-A)
-B >>= R
+	A <<= -Q
+	A >>= R
 
-print "Is A consistent?", A.consistent()
-print ""
-print "A :=", A.eval()
-print ""
-print "Is B consistent?", B.consistent()
-print ""
-print "B :=", B.eval()
+	B <<= Q * (-A)
+	B >>= R
+
+	print "Is A consistent?", A.consistent()
+	print ""
+	print "A :=", A.eval()
+	print ""
+	print "Is B consistent?", B.consistent()
+	print ""
+	print "B :=", B.eval()
 
 
 
