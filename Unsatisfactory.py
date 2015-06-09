@@ -230,6 +230,10 @@ class State( Term ):
 		self.turn_off = None
 		self.value = False
 	
+	def demorgan( self ):
+		self.turn_on.demorgan()
+		self.turn_off.demorgan()
+	
 	def consistent( self ):
 		left = set(self.turn_on.depends())
 		right = set(self.turn_off.depends())
@@ -316,6 +320,9 @@ class TransientEvent( Term ):
 	def __ilshift__( self, rhs ):
 		self.turn_on = rhs
 		return self
+
+	def demorgan( self ):
+		self.turn_on.demorgan()
 	
 	def eval( self ):
 		left = self.turn_on.eval()
