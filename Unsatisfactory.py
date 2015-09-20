@@ -2,6 +2,7 @@
 
 import pprint
 import itertools
+from Interval import Variable, IntervalExpression
 
 
 AND = 1
@@ -9,11 +10,32 @@ OR = 2
 NOT = 3
 XOR = 4
 
+def normalize( entry ):
+	if isinstance( entry, IntervalExpression ):
+		return IntervalTerm( entry )
+	else:
+		return entry
+
+def flatten( array ):
+	out = []
+	if not isinstance( array, list ):
+		return array
+		
+	for entry in array:
+		value = flatten(entry)
+		if isinstance( value, tuple ):
+			out.append( value )
+		else:
+			out.extend( value )
+	
+	return out
+
+
 class Expression( object ):
 	def __init__( self, op, lhs, rhs ):
 		self.op = op
-		self.lhs = lhs
-		self.rhs = rhs
+		self.lhs = normalize(lhs)
+		self.rhs = normalize(rhs)
 
 	def __and__( self, rhs ):
 		return Expression( AND, self, rhs )
@@ -121,13 +143,12 @@ class Expression( object ):
 			return [(self.lhs, False)]
 		
 		elif self.op == OR:
-			left = self.lhs.satisfy()
-			right = self.rhs.satisfy()
-			
+			left = flatten( self.lhs.satisfy() )
+			right = flatten( self.rhs.satisfy() )
 			# test if we did actually generate duplicates
 			if tuple(left) == tuple(right):
 				return [left]
-				
+			
 			return [left, right]
 		
 		elif self.op == AND:
@@ -163,7 +184,43 @@ class Expression( object ):
 					
 					if is_ok:
 						out.append( result )
-					
+			
+			#validate interval terms
+			new_out = []
+			for result in out:
+				its = {}
+				normal = []
+				for entry in result:
+					if isinstance( entry[0], IntervalTerm ):
+						if entry[0].expr.var not in its:
+							its[entry[0].expr.var] = []
+						its[entry[0].expr.var].append( entry[0].expr )
+					else:
+						normal.append( entry )
+				
+				if len( its ) < 1:
+					new_out.append( normal )
+				else:
+					is_ok = True
+					for var in its:
+						result = its[var][0]
+						#print "result", result
+						for q in its[var][1:]:
+							#print "q", q
+							result = result * q
+							#print "result", result
+						if len(result.interval.intervals) < 1:
+							is_ok = False
+						normal.append( (IntervalTerm( result ), True) )
+					if is_ok:	
+						new_out.append( normal )	
+			#out = new_out		
+			out = []
+			tuples = []
+			for entry in new_out:
+				if repr(entry) not in tuples:
+					out.append( entry )
+					tuples.append( repr(entry) )
 			return out
 			
 			
@@ -342,6 +399,20 @@ class TransientEvent( Term ):
 	def __repr__(self):
 		return "TransientEvent('%s')" % self.name
 	
+
+class IntervalTerm( Term ):
+	def __init__( self, expr ):
+		self.name = "(%s)" % str(expr)
+		self.expr = expr
+	
+	def consistent( self ):
+		return len(self.expr.interval.intervals) > 0
+	
+	def __repr__( self ):
+		return str(self.expr)
+		
+	def __neg__( self ):
+		return IntervalTerm( -self.expr )
 		
 
 def analyze( relations ):
@@ -468,6 +539,24 @@ if __name__ == "__main__":
 	print "Is B consistent?", B.consistent()
 	print ""
 	print "B :=", B.eval()
-
+	print ""
+	print ""
+	print "Interval testing"
+	print ""
+	t0 = Variable("T0")
+	t1 = Variable("T1")
+	it = (t0 > 50) * (t0 < 120)
+	it2 = (t0 > 130)
+	koe = (t1 < -1)
+	
+	vtest1 = (X * -it) * (X * (it + -it2) ) + -X*-koe
+	vtest1.demorgan()
+	print vtest1
+	print ""
+	sats = vtest1.satisfy()
+	for sat in sats:
+		print sat
+		print ""
+	
 
 
