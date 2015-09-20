@@ -25,14 +25,14 @@ B <<= Q * (-A)
 B >>= R
 
 
-print "Q :=", Q 
-print "P :=", P
-print "R :=", R
-print "S :=", S
-print "T :=", T
-print ""
-print "after De Morgan rewrite:"
-print ""
+#print "Q :=", Q 
+#print "P :=", P
+#print "R :=", R
+#print "S :=", S
+#print "T :=", T
+#print ""
+#print "after De Morgan rewrite:"
+#print ""
 
 Q.demorgan()
 P.demorgan()
@@ -42,16 +42,16 @@ T.demorgan()
 A.demorgan()
 B.demorgan()
 
-print "Q :=", Q 
-print "P :=", P
-print "R :=", R
-print "S :=", S
-print "T :=", T
-print ""
+#print "Q :=", Q 
+#print "P :=", P
+#print "R :=", R
+#print "S :=", S
+#print "T :=", T
+#print ""
 
 
-print "Generating C code:"
-print ""
+#rint "Generating C code:"
+#print ""
 print generate_c( {
 	'Q': Q,
 	'P': P,
