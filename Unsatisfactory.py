@@ -413,6 +413,33 @@ class IntervalTerm( Term ):
 		
 	def __neg__( self ):
 		return IntervalTerm( -self.expr )
+
+
+class SubsituteTerm( Term ):
+	def __init__( self, name ):
+		self.name = name
+		self.value = True
+		self.expr = None
+
+	def eval(self):
+		return self.expr.eval()
+	
+	def depends(self):
+		return self.expr.depends()
+	
+	def demorgan(self):
+		self.expr.demorgan()
+	
+	def satisfy( self ):
+		return self.expr.satisfy()
+	
+	def __repr__(self):
+		return "SubstituteTerm('%s')" % self.name
+	
+	def __ilshift__( self, rhs ):
+		self.expr = rhs
+		return self
+	
 		
 
 def analyze( relations ):
@@ -557,6 +584,21 @@ if __name__ == "__main__":
 	for sat in sats:
 		print sat
 		print ""
+	
+	print ""
+	print ""
+	
+	K = SubsituteTerm( "K" )
+	
+	
+	K <<= X + Y
+	L =  Z * K
+	
+	print "K:", K
+	print "L:", L
+	print "K.depends():", K.depends()
+	print "K.satisfy():", K.satisfy()
+	print "L.satisfy():", L.satisfy()
 	
 
 
