@@ -10,6 +10,9 @@ OR = 2
 NOT = 3
 XOR = 4
 
+EXPAND_STATE_IN_SATISFY = True
+
+
 def normalize( entry ):
 	if isinstance( entry, IntervalExpression ):
 		return IntervalTerm( entry )
@@ -140,6 +143,10 @@ class Expression( object ):
 	
 	def satisfy( self ):
 		if self.op == NOT:
+			
+			if isinstance( self.lhs, State ) and EXPAND_STATE_IN_SATISFY:
+				return self.lhs.satisfy( state = False )
+			
 			return [(self.lhs, False)]
 		
 		elif self.op == OR:
@@ -345,6 +352,16 @@ class State( Term ):
 					return False
 						
 		return True
+	
+	def satisfy( self, state = True ):
+		
+		if EXPAND_STATE_IN_SATISFY:			
+			if state:
+				return self.turn_on.satisfy()
+			else:
+				return self.turn_off.satisfy()
+		else:
+			return [(self, True)]
 	
 	def eval( self ):
 		left = self.turn_on.eval()
