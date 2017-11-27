@@ -288,7 +288,7 @@ class Term( object ):
 
 
 class State( Term ):
-	def __init__( self, name ):
+	def __init__( self, name = "" ):
 		self.name = name
 		self.turn_on = None
 		self.turn_off = None
@@ -386,7 +386,7 @@ class State( Term ):
 		return "State('%s')" % self.name
 
 class TransientEvent( Term ):
-	def __init__( self, name ):
+	def __init__( self, name = "" ):
 		self.name = name
 		self.turn_on = None
 		self.value = False
@@ -433,7 +433,7 @@ class IntervalTerm( Term ):
 
 
 class SubstituteTerm( Term ):
-	def __init__( self, name ):
+	def __init__( self, name = "" ):
 		self.name = name
 		self.value = True
 		self.expr = None
