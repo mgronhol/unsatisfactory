@@ -233,7 +233,7 @@ class Expression( object ):
 			
 
 class Term( object ):
-	def __init__( self, name ):
+	def __init__( self, name = "" ):
 		self.name = name
 		self.value = True
 	
@@ -432,7 +432,7 @@ class IntervalTerm( Term ):
 		return IntervalTerm( -self.expr )
 
 
-class SubsituteTerm( Term ):
+class SubstituteTerm( Term ):
 	def __init__( self, name ):
 		self.name = name
 		self.value = True
