@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 from Unsatisfactory import *
 from CodeGenerators import *
@@ -52,7 +52,7 @@ B.demorgan()
 
 #rint "Generating C code:"
 #print ""
-print generate_c( {
+print( generate_c( {
 	'Q': Q,
 	'P': P,
 	'R': R,
@@ -60,6 +60,6 @@ print generate_c( {
 	'T': T,
 	'A': A,
 	'B': B
-	})
+	}) )
 
 

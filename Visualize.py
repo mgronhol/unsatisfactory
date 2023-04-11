@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 from Unsatisfactory import *
 import sys
@@ -80,7 +80,7 @@ class OC(object):
 		namelen = min( len(self.term.name), 7 )
 		
 		for i in range( namelen):
-			dbuf.write( x + i + 4 - namelen/2, y+1, self.term.name[i] )
+			dbuf.write( x + i + 4 - namelen // 2, y+1, self.term.name[i] )
 		
 		
 		if (self.junction & JUNCTION_LEFT) != 0:
@@ -154,7 +154,7 @@ class NC( object ):
 		namelen = min( len(self.term.name), 7 )
 		
 		for i in range( namelen ):
-			dbuf.write( x + i + 4 - namelen/2, y+1, self.term.name[i] )
+			dbuf.write( x + i + 4 - namelen // 2, y+1, self.term.name[i] )
 		
 
 
@@ -276,7 +276,7 @@ class OutputCoil( object ):
 		namelen = min( len(self.name), 7 )
 		
 		for i in range( namelen ):
-			dbuf.write( x + i + 5 - namelen/2, y+1, self.name[i] )
+			dbuf.write( x + i + 5 - namelen // 2, y+1, self.name[i] )
 
 
 		
@@ -396,8 +396,8 @@ def visualize( name, expr ):
 	ladder = generate_ladder( expr )
 	grid = render_ladder( ladder, name, expr, 8 )
 	draw_grid( grid )
-	print ""
-	print ""
+	print( "" )
+	print( "" )
 
 if __name__ == "__main__":
 	X = Term("X")
@@ -426,7 +426,7 @@ if __name__ == "__main__":
 	R.demorgan()
 	S.demorgan()
 
-	print ""
+	print( "" )
 	visualize( "Q", Q )
 	visualize( "notQ", notQ )
 	visualize( "R", R )

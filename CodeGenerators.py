@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 from Unsatisfactory import *
 
@@ -82,7 +82,7 @@ def generate_c( clauses ):
 	out += "\n"
 	for entry in defines:
 		if (not isinstance( entry, State )) and (not isinstance( entry, TransientEvent )):
-			out += "void rule_engine_update_%s( uint8_t value ){ %s = (value == TRUE); }\n" % ( c_slugify(entry.name), c_gensym(entry) )
+			out += "void rule_engine_update_%s( rule_engine_t *engine, uint8_t value ){ %s = (value == TRUE); }\n" % ( c_slugify(entry.name), c_gensym(entry) )
 
 	out += "\n"
 	out += "void rule_engine_run( rule_engine_t *engine ){ \n"

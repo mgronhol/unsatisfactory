@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import pprint
 import itertools
@@ -211,11 +211,8 @@ class Expression( object ):
 					is_ok = True
 					for var in its:
 						result = its[var][0]
-						#print "result", result
 						for q in its[var][1:]:
-							#print "q", q
 							result = result * q
-							#print "result", result
 						if len(result.interval.intervals) < 1:
 							is_ok = False
 						normal.append( (IntervalTerm( result ), True) )
@@ -302,10 +299,6 @@ class State( Term ):
 		left = set(self.turn_on.depends())
 		right = set(self.turn_off.depends())
 		
-		#print ""
-		#print "consistency:"
-		#print "\tl:", left
-		#print "\tr:", right
 		
 		common = left.intersection( right )
 		# state turning on and off are fully independent
@@ -316,11 +309,6 @@ class State( Term ):
 		
 		left = self.turn_on.satisfy()
 		right = self.turn_off.satisfy()
-		
-		#print ""
-		#print "satisfy:"
-		#print "\tl:", left
-		#print "\tr:", right
 		
 		# make sure that both on- and off-states are possible
 		if len( left ) < 1:
@@ -468,7 +456,7 @@ def analyze( relations ):
 				var_map[term] = []
 			var_map[term].append( name )
 	pprint.pprint( var_map)
-	print ""
+	print( "" )
 	terms = var_map.keys()
 	
 	rels = {}
@@ -487,9 +475,9 @@ def analyze( relations ):
 				terms[j].set( (i & (1 << j)) > 0 )
 				values.append((i & (1 << j)) > 0 )
 			evals[tuple(values)] = {name: relation.eval() for (name, relation) in to_be_evaled.items()}
-		print terms
+		print( terms )
 		pprint.pprint( evals )
-		print ""
+		print( "" )
 
 
 
@@ -510,14 +498,14 @@ if __name__ == "__main__":
 	S = X * ((-(-(X+X))) * X)
 	T = X * (-(-(-( -(-Z)))))
 
-	print "Q :=", Q 
-	print "P :=", P
-	print "R :=", R
-	print "S :=", S
-	print "T :=", T
-	print ""
-	print "after De Morgan rewrite:"
-	print ""
+	print( "Q :=", Q  )
+	print( "P :=", P )
+	print( "R :=", R )
+	print( "S :=", S )
+	print( "T :=", T )
+	print( "" )
+	print( "after De Morgan rewrite:" )
+	print( "" )
 
 	Q.demorgan()
 	P.demorgan()
@@ -525,37 +513,37 @@ if __name__ == "__main__":
 	S.demorgan()
 	T.demorgan()
 
-	print "Q :=", Q 
-	print "P :=", P
-	print "R :=", R
-	print "S :=", S
-	print "T :=", T
-	print ""
+	print( "Q :=", Q )
+	print( "P :=", P )
+	print( "R :=", R )
+	print( "S :=", S )
+	print( "T :=", T )
+	print( "" )
 
-	print ""
-	print "Satify test"
-	print "Q:", Q.satisfy()
-	print "P:", P.satisfy()
-	print "R:", R.satisfy()
-	print "S:", S.satisfy()
-	print "T:", T.satisfy()
+	print( "" )
+	print( "Satify test" )
+	print( "Q:", Q.satisfy() )
+	print( "P:", P.satisfy() )
+	print( "R:", R.satisfy() )
+	print( "S:", S.satisfy() )
+	print( "T:", T.satisfy() )
 
-	print ""
-	print ""
+	print( "" )
+	print( "" )
 
-	print "Q :=", Q, "->", Q.eval()
-	print "P :=", P, "->", P.eval()
-	print "R :=", R, "->", R.eval()
-	print "S :=", S, "->", S.eval()
-	print "T :=", T, "->", T.eval()
+	print( "Q :=", Q, "->", Q.eval() )
+	print( "P :=", P, "->", P.eval() )
+	print( "R :=", R, "->", R.eval() )
+	print( "S :=", S, "->", S.eval() )
+	print( "T :=", T, "->", T.eval() )
 
-	print ""
-	print "Q depends on", Q.depends()
-	print "P depends on", P.depends()
-	print "R depends on", R.depends()
-	print "S depends on", S.depends()
-	print "T depends on", T.depends()
-	print ""
+	print( "" )
+	print( "Q depends on", Q.depends() )
+	print( "P depends on", P.depends() )
+	print( "R depends on", R.depends() )
+	print( "S depends on", S.depends() )
+	print( "T depends on", T.depends() )
+	print( "" )
 	analyze({
 		'Q': Q,
 		'R': R,
@@ -564,8 +552,8 @@ if __name__ == "__main__":
 		'T': T,
 		})
 
-	print ""
-	print ""
+	print( "" )
+	print( "" )
 
 	A = State("A")
 	B = State("B")
@@ -576,17 +564,17 @@ if __name__ == "__main__":
 	B <<= Q * (-A)
 	B >>= R
 
-	print "Is A consistent?", A.consistent()
-	print ""
-	print "A :=", A.eval()
-	print ""
-	print "Is B consistent?", B.consistent()
-	print ""
-	print "B :=", B.eval()
-	print ""
-	print ""
-	print "Interval testing"
-	print ""
+	print( "Is A consistent?", A.consistent() )
+	print( "" )
+	print( "A :=", A.eval() )
+	print( "" )
+	print( "Is B consistent?", B.consistent() )
+	print( "" )
+	print( "B :=", B.eval() )
+	print( "" )
+	print( "" )
+	print( "Interval testing" )
+	print( "" )
 	t0 = Variable("T0")
 	t1 = Variable("T1")
 	it = (t0 > 50) * (t0 < 120)
@@ -595,27 +583,27 @@ if __name__ == "__main__":
 	
 	vtest1 = (X * -it) * (X * (it + -it2) ) + -X*-koe
 	vtest1.demorgan()
-	print vtest1
-	print ""
+	print( vtest1 )
+	print( "" )
 	sats = vtest1.satisfy()
 	for sat in sats:
-		print sat
-		print ""
+		print( sat )
+		print( "" )
 	
-	print ""
-	print ""
+	print( "" )
+	print( "" )
 	
-	K = SubsituteTerm( "K" )
+	K = SubstituteTerm( "K" )
 	
 	
 	K <<= X + Y
 	L =  Z * K
 	
-	print "K:", K
-	print "L:", L
-	print "K.depends():", K.depends()
-	print "K.satisfy():", K.satisfy()
-	print "L.satisfy():", L.satisfy()
+	print( "K:", K )
+	print( "L:", L )
+	print( "K.depends():", K.depends() )
+	print( "K.satisfy():", K.satisfy() )
+	print( "L.satisfy():", L.satisfy() )
 	
 
 
